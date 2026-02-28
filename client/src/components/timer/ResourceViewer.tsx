@@ -143,7 +143,7 @@ export default function ResourceViewer({ type }: ResourceViewerProps) {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1 }}
-          className="grid grid-cols-2 gap-8 sm:gap-12 p-8 bg-white rounded-2xl shadow-sm border border-black/5"
+          className="grid grid-cols-2 gap-8 sm:gap-12 p-8 bg-white rounded-2xl shadow-sm border border-black/5 pt-[0px] pb-[0px]"
         >
           {chords.map((chord, i) => (
             <UkeChordDiagram key={chord.name} chord={chord} delay={0.15 + i * 0.08} />
