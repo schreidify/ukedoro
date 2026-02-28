@@ -1,0 +1,192 @@
+import { useState, useEffect, useCallback } from "react";
+import { Play, Pause, RotateCcw, Settings, Music, Coffee, Briefcase } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import TimerDisplay from "@/components/timer/TimerDisplay";
+import ResourceViewer from "@/components/timer/ResourceViewer";
+import SettingsModal from "@/components/timer/SettingsModal";
+import { motion, AnimatePresence } from "framer-motion";
+
+export type Mode = "work" | "break";
+export type ResourceType = "chords" | "video";
+
+export default function Home() {
+  const [mode, setMode] = useState<Mode>("work");
+  const [isActive, setIsActive] = useState(false);
+  const [workDuration, setWorkDuration] = useState(25 * 60);
+  const [breakDuration, setBreakDuration] = useState(5 * 60);
+  const [timeLeft, setTimeLeft] = useState(workDuration);
+  const [resource, setResource] = useState<ResourceType>("chords");
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  // Update time left if durations change while not active
+  useEffect(() => {
+    if (!isActive) {
+      setTimeLeft(mode === "work" ? workDuration : breakDuration);
+    }
+  }, [workDuration, breakDuration, mode, isActive]);
+
+  const switchMode = useCallback(() => {
+    const nextMode = mode === "work" ? "break" : "work";
+    setMode(nextMode);
+    setTimeLeft(nextMode === "work" ? workDuration : breakDuration);
+    // Auto-start next phase
+    setIsActive(true);
+  }, [mode, workDuration, breakDuration]);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+
+    if (isActive && timeLeft > 0) {
+      interval = setInterval(() => {
+        setTimeLeft((time) => time - 1);
+      }, 1000);
+    } else if (isActive && timeLeft === 0) {
+      switchMode();
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isActive, timeLeft, switchMode]);
+
+  const toggleTimer = () => setIsActive(!isActive);
+
+  const resetTimer = () => {
+    setIsActive(false);
+    setTimeLeft(mode === "work" ? workDuration : breakDuration);
+  };
+
+  const currentDuration = mode === "work" ? workDuration : breakDuration;
+  const progress = ((currentDuration - timeLeft) / currentDuration) * 100;
+
+  // Background and primary color classes based on mode
+  const bgClass = mode === "work" ? "bg-background" : "bg-break/5";
+  const primaryColor = mode === "work" ? "text-primary" : "text-break";
+  const ringColor = mode === "work" ? "stroke-primary" : "stroke-break";
+
+  return (
+    <div className={`min-h-screen w-full flex flex-col items-center justify-center transition-colors duration-700 ${bgClass} font-sans`}>
+      <header className="absolute top-0 w-full p-6 flex justify-between items-center z-10">
+        <div className="flex items-center gap-2">
+          <Music className={`w-8 h-8 ${primaryColor} transition-colors duration-700`} />
+          <h1 className="text-2xl font-bold font-display tracking-tight text-foreground">UkeDoro</h1>
+        </div>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={() => setIsSettingsOpen(true)}
+          className="hover:bg-primary/10 rounded-full"
+          data-testid="button-settings"
+        >
+          <Settings className="w-6 h-6 text-foreground/80" />
+        </Button>
+      </header>
+
+      <main className="w-full max-w-5xl px-6 flex flex-col lg:flex-row items-center justify-center gap-12 mt-16">
+        
+        {/* Timer Section */}
+        <motion.div 
+          layout
+          className={`flex flex-col items-center justify-center ${mode === "break" ? "lg:w-1/3" : "w-full"}`}
+        >
+          <div className="mb-8 flex items-center gap-4 bg-white/50 backdrop-blur-sm p-1.5 rounded-full border shadow-sm">
+            <button
+              onClick={() => { setMode("work"); setIsActive(false); }}
+              className={`px-6 py-2 rounded-full font-medium transition-all flex items-center gap-2 ${
+                mode === "work" 
+                  ? "bg-primary text-primary-foreground shadow-md" 
+                  : "text-foreground/60 hover:bg-foreground/5"
+              }`}
+              data-testid="button-mode-work"
+            >
+              <Briefcase className="w-4 h-4" /> Focus
+            </button>
+            <button
+              onClick={() => { setMode("break"); setIsActive(false); }}
+              className={`px-6 py-2 rounded-full font-medium transition-all flex items-center gap-2 ${
+                mode === "break" 
+                  ? "bg-break text-break-foreground shadow-md" 
+                  : "text-foreground/60 hover:bg-foreground/5"
+              }`}
+              data-testid="button-mode-break"
+            >
+              <Coffee className="w-4 h-4" /> Learn Uke
+            </button>
+          </div>
+
+          <TimerDisplay 
+            timeLeft={timeLeft} 
+            progress={progress} 
+            ringColor={ringColor}
+            size={mode === "work" ? 360 : 280}
+          />
+
+          <div className="mt-10 flex items-center gap-6">
+            <Button
+              size="icon"
+              variant="outline"
+              className="w-14 h-14 rounded-full border-2 hover:bg-foreground/5"
+              onClick={resetTimer}
+              data-testid="button-reset"
+            >
+              <RotateCcw className="w-6 h-6 text-foreground/70" />
+            </Button>
+            
+            <Button
+              size="icon"
+              className={`w-20 h-20 rounded-full shadow-lg transition-transform hover:scale-105 active:scale-95 ${
+                mode === "work" ? "bg-primary hover:bg-primary/90" : "bg-break hover:bg-break/90"
+              }`}
+              onClick={toggleTimer}
+              data-testid="button-play-pause"
+            >
+              {isActive ? (
+                <Pause className="w-8 h-8 text-white fill-current" />
+              ) : (
+                <Play className="w-8 h-8 text-white fill-current translate-x-0.5" />
+              )}
+            </Button>
+          </div>
+        </motion.div>
+
+        {/* Resource Section (Only visible during break) */}
+        <AnimatePresence>
+          {mode === "break" && (
+            <motion.div 
+              initial={{ opacity: 0, x: 20, width: 0 }}
+              animate={{ opacity: 1, x: 0, width: "100%" }}
+              exit={{ opacity: 0, x: 20, width: 0 }}
+              transition={{ type: "spring", bounce: 0.2, duration: 0.8 }}
+              className="lg:w-2/3 h-[600px] bg-white rounded-3xl shadow-xl border overflow-hidden flex flex-col"
+            >
+              <div className="p-4 border-b bg-muted/30 flex items-center justify-between">
+                <h3 className="font-display font-semibold text-lg flex items-center gap-2">
+                  <Music className="w-5 h-5 text-break" />
+                  Ukulele Session
+                </h3>
+                <div className="text-sm font-medium text-muted-foreground bg-white px-3 py-1 rounded-full border shadow-sm">
+                  {resource === "chords" ? "Chord Practice" : "Video Tutorial"}
+                </div>
+              </div>
+              <div className="flex-1 bg-muted/10 relative">
+                <ResourceViewer type={resource} />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+      </main>
+
+      <SettingsModal 
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)}
+        workDuration={workDuration}
+        setWorkDuration={setWorkDuration}
+        breakDuration={breakDuration}
+        setBreakDuration={setBreakDuration}
+        resource={resource}
+        setResource={setResource}
+      />
+    </div>
+  );
+}
