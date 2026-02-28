@@ -8,7 +8,7 @@ interface ResourceViewerProps {
 export default function ResourceViewer({ type }: ResourceViewerProps) {
   if (type === "chords") {
     return (
-      <div className="w-full h-full flex flex-col items-center justify-center p-8 bg-[#FAFAFA]" data-testid="resource-viewer-chords">
+      <div className="w-full h-full flex flex-col items-center justify-center p-8 bg-[#FAFAFA] pt-[0px] pb-[0px]" data-testid="resource-viewer-chords">
         <motion.img 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
