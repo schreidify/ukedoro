@@ -9,8 +9,7 @@ import Home from "@/pages/Home";
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Home}/>
-      {/* Fallback to 404 */}
+      <Route path="/" component={Home} />
       <Route component={NotFound} />
     </Switch>
   );

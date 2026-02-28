@@ -1,68 +1,36 @@
-import { useState, useEffect, useCallback } from "react";
-import { Play, Pause, RotateCcw, Settings, Music, Coffee, Briefcase } from "lucide-react";
+import { useState } from "react";
+import { Play, Pause, RotateCcw, Settings, Music, Coffee, Briefcase, Timer, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import TimerDisplay from "@/components/timer/TimerDisplay";
 import ResourceViewer from "@/components/timer/ResourceViewer";
 import SettingsModal from "@/components/timer/SettingsModal";
 import { motion, AnimatePresence } from "framer-motion";
-
-export type Mode = "work" | "break";
-export type ResourceType = "chords" | "video";
+import { usePomodoro } from "@/hooks/use-pomodoro";
 
 export default function Home() {
-  const [mode, setMode] = useState<Mode>("work");
-  const [isActive, setIsActive] = useState(false);
-  const [workDuration, setWorkDuration] = useState(25 * 60);
-  const [breakDuration, setBreakDuration] = useState(5 * 60);
-  const [timeLeft, setTimeLeft] = useState(workDuration);
-  const [resource, setResource] = useState<ResourceType>("chords");
+  const {
+    mode,
+    isActive,
+    timeLeft,
+    progress,
+    workDuration,
+    breakDuration,
+    resource,
+    stats,
+    toggleTimer,
+    resetTimer,
+    setMode,
+    setWorkDuration,
+    setBreakDuration,
+    setResource,
+    saveSettings,
+  } = usePomodoro();
+
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
-  // Update time left if durations change while not active
-  useEffect(() => {
-    if (!isActive) {
-      setTimeLeft(mode === "work" ? workDuration : breakDuration);
-    }
-  }, [workDuration, breakDuration, mode, isActive]);
-
-  const switchMode = useCallback(() => {
-    const nextMode = mode === "work" ? "break" : "work";
-    setMode(nextMode);
-    setTimeLeft(nextMode === "work" ? workDuration : breakDuration);
-    // Auto-start next phase
-    setIsActive(true);
-  }, [mode, workDuration, breakDuration]);
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
-
-    if (isActive && timeLeft > 0) {
-      interval = setInterval(() => {
-        setTimeLeft((time) => time - 1);
-      }, 1000);
-    } else if (isActive && timeLeft === 0) {
-      switchMode();
-    }
-
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [isActive, timeLeft, switchMode]);
-
-  const toggleTimer = () => setIsActive(!isActive);
-
-  const resetTimer = () => {
-    setIsActive(false);
-    setTimeLeft(mode === "work" ? workDuration : breakDuration);
-  };
-
-  const currentDuration = mode === "work" ? workDuration : breakDuration;
-  const progress = ((currentDuration - timeLeft) / currentDuration) * 100;
-
-  // Background and primary color classes based on mode
-  const bgClass = mode === "work" ? "bg-background" : "bg-break/5";
   const primaryColor = mode === "work" ? "text-primary" : "text-break";
   const ringColor = mode === "work" ? "stroke-primary" : "stroke-break";
+  const bgClass = mode === "work" ? "bg-background" : "bg-break/5";
 
   return (
     <div className={`min-h-screen w-full flex flex-col items-center justify-center transition-colors duration-700 ${bgClass} font-sans`}>
@@ -71,30 +39,43 @@ export default function Home() {
           <Music className={`w-8 h-8 ${primaryColor} transition-colors duration-700`} />
           <h1 className="text-2xl font-bold font-display tracking-tight text-foreground">UkeDoro</h1>
         </div>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={() => setIsSettingsOpen(true)}
-          className="hover:bg-primary/10 rounded-full"
-          data-testid="button-settings"
-        >
-          <Settings className="w-6 h-6 text-foreground/80" />
-        </Button>
+        <div className="flex items-center gap-4">
+          <div className="hidden sm:flex items-center gap-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-1.5 bg-white/60 backdrop-blur-sm px-3 py-1.5 rounded-full border" data-testid="stat-sessions">
+              <Flame className="w-4 h-4 text-primary" />
+              <span className="font-medium">{stats.totalSessions}</span>
+              <span>sessions</span>
+            </div>
+            <div className="flex items-center gap-1.5 bg-white/60 backdrop-blur-sm px-3 py-1.5 rounded-full border" data-testid="stat-focus-minutes">
+              <Timer className="w-4 h-4 text-accent" />
+              <span className="font-medium">{stats.totalFocusMinutes}</span>
+              <span>focus min</span>
+            </div>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsSettingsOpen(true)}
+            className="hover:bg-primary/10 rounded-full"
+            data-testid="button-settings"
+          >
+            <Settings className="w-6 h-6 text-foreground/80" />
+          </Button>
+        </div>
       </header>
 
       <main className="w-full max-w-5xl px-6 flex flex-col lg:flex-row items-center justify-center gap-12 mt-16">
-        
-        {/* Timer Section */}
-        <motion.div 
+
+        <motion.div
           layout
           className={`flex flex-col items-center justify-center ${mode === "break" ? "lg:w-1/3" : "w-full"}`}
         >
           <div className="mb-8 flex items-center gap-4 bg-white/50 backdrop-blur-sm p-1.5 rounded-full border shadow-sm">
             <button
-              onClick={() => { setMode("work"); setIsActive(false); }}
+              onClick={() => setMode("work")}
               className={`px-6 py-2 rounded-full font-medium transition-all flex items-center gap-2 ${
-                mode === "work" 
-                  ? "bg-primary text-primary-foreground shadow-md" 
+                mode === "work"
+                  ? "bg-primary text-primary-foreground shadow-md"
                   : "text-foreground/60 hover:bg-foreground/5"
               }`}
               data-testid="button-mode-work"
@@ -102,10 +83,10 @@ export default function Home() {
               <Briefcase className="w-4 h-4" /> Focus
             </button>
             <button
-              onClick={() => { setMode("break"); setIsActive(false); }}
+              onClick={() => setMode("break")}
               className={`px-6 py-2 rounded-full font-medium transition-all flex items-center gap-2 ${
-                mode === "break" 
-                  ? "bg-break text-break-foreground shadow-md" 
+                mode === "break"
+                  ? "bg-break text-break-foreground shadow-md"
                   : "text-foreground/60 hover:bg-foreground/5"
               }`}
               data-testid="button-mode-break"
@@ -114,9 +95,9 @@ export default function Home() {
             </button>
           </div>
 
-          <TimerDisplay 
-            timeLeft={timeLeft} 
-            progress={progress} 
+          <TimerDisplay
+            timeLeft={timeLeft}
+            progress={progress}
             ringColor={ringColor}
             size={mode === "work" ? 360 : 280}
           />
@@ -131,7 +112,7 @@ export default function Home() {
             >
               <RotateCcw className="w-6 h-6 text-foreground/70" />
             </Button>
-            
+
             <Button
               size="icon"
               className={`w-20 h-20 rounded-full shadow-lg transition-transform hover:scale-105 active:scale-95 ${
@@ -149,10 +130,9 @@ export default function Home() {
           </div>
         </motion.div>
 
-        {/* Resource Section (Only visible during break) */}
         <AnimatePresence>
           {mode === "break" && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: 20, width: 0 }}
               animate={{ opacity: 1, x: 0, width: "100%" }}
               exit={{ opacity: 0, x: 20, width: 0 }}
@@ -177,9 +157,12 @@ export default function Home() {
 
       </main>
 
-      <SettingsModal 
-        isOpen={isSettingsOpen} 
-        onClose={() => setIsSettingsOpen(false)}
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => {
+          saveSettings();
+          setIsSettingsOpen(false);
+        }}
         workDuration={workDuration}
         setWorkDuration={setWorkDuration}
         breakDuration={breakDuration}
