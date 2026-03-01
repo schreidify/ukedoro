@@ -33,7 +33,7 @@
 
 **Size:** Small
 **Model:** Fast
-**Status:** Not Started
+**Status:** Pending Test
 
 ---
 
