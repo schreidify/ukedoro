@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Play, Pause, RotateCcw, Settings, Music, Coffee, Briefcase, Timer, Flame } from "lucide-react";
+import { Play, Pause, RotateCcw, Settings, Music, Guitar, Briefcase, Timer, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import TimerDisplay from "@/components/timer/TimerDisplay";
 import ResourceViewer from "@/components/timer/ResourceViewer";
@@ -91,7 +91,7 @@ export default function Home() {
               }`}
               data-testid="button-mode-break"
             >
-              <Coffee className="w-4 h-4" /> Learn Uke
+              <Guitar className="w-4 h-4" /> Learn Uke
             </button>
           </div>
 
