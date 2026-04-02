@@ -8,7 +8,9 @@ export type Mode = "work" | "break";
 export type ResourceType = "chords" | "video";
 
 function normalizeAccentColor(value: unknown): AccentColor {
-  return value === "orange" ? "orange" : "blue";
+  if (value === "orange") return "orange";
+  // Legacy DB value "blue" and non-orange defaults use the green focus accent
+  return "green";
 }
 
 function getSessionKey(): string {
@@ -47,7 +49,7 @@ export function usePomodoro() {
   const [breakDuration, setBreakDuration] = useState(5 * 60);
   const [timeLeft, setTimeLeft] = useState(25 * 60);
   const [resource, setResource] = useState<ResourceType>("chords");
-  const [accentColor, setAccentColor] = useState<AccentColor>("blue");
+  const [accentColor, setAccentColor] = useState<AccentColor>("orange");
   const [settingsLoaded, setSettingsLoaded] = useState(false);
 
   useEffect(() => {
@@ -62,8 +64,8 @@ export function usePomodoro() {
   }, [serverSettings, settingsLoaded]);
 
   useEffect(() => {
-    if (accentColor === "orange") {
-      document.documentElement.setAttribute("data-accent-theme", "orange");
+    if (accentColor === "green") {
+      document.documentElement.setAttribute("data-accent-theme", "green");
     } else {
       document.documentElement.removeAttribute("data-accent-theme");
     }

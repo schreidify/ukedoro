@@ -17,7 +17,7 @@ export async function registerRoutes(
         workDuration: 1500,
         breakDuration: 300,
         resource: "chords",
-        accentColor: "blue",
+        accentColor: "orange",
       });
     }
     res.json(result);

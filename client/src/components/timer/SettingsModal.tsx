@@ -85,7 +85,7 @@ export default function SettingsModal({
           <div className="space-y-4 pt-4 border-t">
             <Label className="text-base font-medium">Focus accent</Label>
             <p className="text-sm text-muted-foreground">
-              Blue or orange for focus controls, stats, and the progress ring.
+              Green or orange for focus controls, stats, and the progress ring.
             </p>
             <RadioGroup
               value={accentColor}
@@ -94,13 +94,13 @@ export default function SettingsModal({
             >
               <div
                 className="flex items-center gap-3 bg-muted/20 p-3 rounded-xl border hover:bg-muted/40 transition-colors cursor-pointer"
-                onClick={() => setAccentColor("blue")}
+                onClick={() => setAccentColor("green")}
               >
-                <RadioGroupItem value="blue" id="accent-blue" />
-                <Label htmlFor="accent-blue" className="cursor-pointer flex-1 font-medium">
+                <RadioGroupItem value="green" id="accent-green" />
+                <Label htmlFor="accent-green" className="cursor-pointer flex-1 font-medium">
                   <span className="flex items-center gap-2">
-                    <span className="w-4 h-4 rounded-full bg-[hsl(221_83%_53%)] border shadow-sm shrink-0" />
-                    Blue
+                    <span className="w-4 h-4 rounded-full bg-[hsl(142_76%_36%)] border shadow-sm shrink-0" />
+                    Green
                   </span>
                 </Label>
               </div>

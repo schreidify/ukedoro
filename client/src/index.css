@@ -44,11 +44,11 @@
   --popover: 0 0% 100%;
   --popover-foreground: 0 0% 13%;
   
-  --primary: 221 83% 53%; /* Blue */
-  --primary-foreground: 0 0% 98%;
+  --primary: 36 100% 57%; /* Orange focus accent #FFA726 */
+  --primary-foreground: 0 0% 13%;
   
-  --secondary: 36 100% 57%; /* Warm Orange #FFA726 */
-  --secondary-foreground: 0 0% 13%;
+  --secondary: 221 83% 53%; /* Blue */
+  --secondary-foreground: 0 0% 98%;
   
   --muted: 0 0% 92%;
   --muted-foreground: 0 0% 45%;
@@ -61,7 +61,7 @@
   
   --border: 0 0% 88%;
   --input: 0 0% 88%;
-  --ring: 221 83% 53%;
+  --ring: 36 100% 57%;
   
   --radius: 1.5rem;
   
@@ -69,13 +69,13 @@
   --break-foreground: 0 0% 98%;
 }
 
-/* Swap focus accent to orange (primary orange, secondary blue) */
-html[data-accent-theme="orange"] {
-  --primary: 36 100% 57%;
-  --primary-foreground: 0 0% 13%;
-  --secondary: 221 83% 53%;
-  --secondary-foreground: 0 0% 98%;
-  --ring: 36 100% 57%;
+/* Alternate focus accent: green primary, orange secondary */
+html[data-accent-theme="green"] {
+  --primary: 142 76% 36%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 36 100% 57%;
+  --secondary-foreground: 0 0% 13%;
+  --ring: 142 76% 36%;
 }
 
 .dark {
@@ -85,10 +85,10 @@ html[data-accent-theme="orange"] {
   --card-foreground: 0 0% 98%;
   --popover: 0 0% 14%;
   --popover-foreground: 0 0% 98%;
-  --primary: 217 91% 60%;
+  --primary: 36 100% 55%;
   --primary-foreground: 0 0% 98%;
-  --secondary: 36 100% 57%;
-  --secondary-foreground: 0 0% 13%;
+  --secondary: 217 91% 60%;
+  --secondary-foreground: 0 0% 98%;
   --muted: 0 0% 20%;
   --muted-foreground: 0 0% 65%;
   --accent: 16 18% 47%;
@@ -97,18 +97,18 @@ html[data-accent-theme="orange"] {
   --destructive-foreground: 0 0% 98%;
   --border: 0 0% 20%;
   --input: 0 0% 20%;
-  --ring: 217 91% 60%;
+  --ring: 36 100% 55%;
   
   --break: 122 39% 49%;
   --break-foreground: 0 0% 98%;
 }
 
-html.dark[data-accent-theme="orange"] {
-  --primary: 36 100% 55%;
+html.dark[data-accent-theme="green"] {
+  --primary: 142 71% 48%;
   --primary-foreground: 0 0% 98%;
-  --secondary: 217 91% 60%;
-  --secondary-foreground: 0 0% 98%;
-  --ring: 36 100% 55%;
+  --secondary: 36 100% 57%;
+  --secondary-foreground: 0 0% 13%;
+  --ring: 142 71% 48%;
 }
 
 @layer base {
