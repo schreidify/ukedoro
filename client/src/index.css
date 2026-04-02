@@ -44,7 +44,7 @@
   --popover: 0 0% 100%;
   --popover-foreground: 0 0% 13%;
   
-  --primary: 14 82% 46%; /* Tomato Red #D84315 */
+  --primary: 221 83% 53%; /* Blue */
   --primary-foreground: 0 0% 98%;
   
   --secondary: 36 100% 57%; /* Warm Orange #FFA726 */
@@ -61,7 +61,7 @@
   
   --border: 0 0% 88%;
   --input: 0 0% 88%;
-  --ring: 14 82% 46%;
+  --ring: 221 83% 53%;
   
   --radius: 1.5rem;
   
@@ -76,7 +76,7 @@
   --card-foreground: 0 0% 98%;
   --popover: 0 0% 14%;
   --popover-foreground: 0 0% 98%;
-  --primary: 14 82% 46%;
+  --primary: 217 91% 60%;
   --primary-foreground: 0 0% 98%;
   --secondary: 36 100% 57%;
   --secondary-foreground: 0 0% 13%;
@@ -88,7 +88,7 @@
   --destructive-foreground: 0 0% 98%;
   --border: 0 0% 20%;
   --input: 0 0% 20%;
-  --ring: 14 82% 46%;
+  --ring: 217 91% 60%;
   
   --break: 122 39% 49%;
   --break-foreground: 0 0% 98%;
