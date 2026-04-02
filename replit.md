@@ -31,4 +31,4 @@ A web-based Pomodoro timer that helps users stay productive while learning ukule
 ## Design
 - Colors: Primary #D84315 (tomato), Break #4CAF50 (green), Accent #8D6E63 (wood brown)
 - Fonts: Poppins (display) + Roboto (body)
-- Circular SVG timer with animated progress ring .
+- Circular SVG timer with animated progress ring
