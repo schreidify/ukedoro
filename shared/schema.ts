@@ -2,12 +2,16 @@ import { pgTable, text, varchar, integer, timestamp, serial } from "drizzle-orm/
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+export const accentColorEnum = z.enum(["blue", "orange"]);
+export type AccentColor = z.infer<typeof accentColorEnum>;
+
 export const settings = pgTable("settings", {
   id: serial("id").primaryKey(),
   sessionKey: varchar("session_key", { length: 255 }).notNull().unique(),
   workDuration: integer("work_duration").notNull().default(1500),
   breakDuration: integer("break_duration").notNull().default(300),
   resource: text("resource").notNull().default("chords"),
+  accentColor: varchar("accent_color", { length: 16 }).notNull().default("blue"),
 });
 
 export const pomodoroSessions = pgTable("pomodoro_sessions", {
@@ -18,7 +22,9 @@ export const pomodoroSessions = pgTable("pomodoro_sessions", {
   completedAt: timestamp("completed_at").notNull().defaultNow(),
 });
 
-export const insertSettingsSchema = createInsertSchema(settings).omit({ id: true });
+export const insertSettingsSchema = createInsertSchema(settings, {
+  accentColor: accentColorEnum.optional(),
+}).omit({ id: true });
 export const updateSettingsSchema = insertSettingsSchema.partial().required({ sessionKey: true });
 export const insertPomodoroSessionSchema = createInsertSchema(pomodoroSessions).omit({ id: true, completedAt: true });
 

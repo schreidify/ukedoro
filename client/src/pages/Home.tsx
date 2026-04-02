@@ -16,6 +16,7 @@ export default function Home() {
     workDuration,
     breakDuration,
     resource,
+    accentColor,
     stats,
     toggleTimer,
     resetTimer,
@@ -23,6 +24,7 @@ export default function Home() {
     setWorkDuration,
     setBreakDuration,
     setResource,
+    setAccentColor,
     saveSettings,
   } = usePomodoro();
 
@@ -169,6 +171,8 @@ export default function Home() {
         setBreakDuration={setBreakDuration}
         resource={resource}
         setResource={setResource}
+        accentColor={accentColor}
+        setAccentColor={setAccentColor}
       />
     </div>
   );

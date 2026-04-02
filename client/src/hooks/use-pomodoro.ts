@@ -2,9 +2,14 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { playTimerEndSound, triggerVisualAlert } from "@/lib/timer-alert";
+import type { AccentColor } from "@shared/schema";
 
 export type Mode = "work" | "break";
 export type ResourceType = "chords" | "video";
+
+function normalizeAccentColor(value: unknown): AccentColor {
+  return value === "orange" ? "orange" : "blue";
+}
 
 function getSessionKey(): string {
   let key = localStorage.getItem("ukedoro-session-key");
@@ -23,6 +28,7 @@ export function usePomodoro() {
     workDuration: number;
     breakDuration: number;
     resource: ResourceType;
+    accentColor?: AccentColor;
   }>({
     queryKey: ["/api/settings", sessionKey],
   });
@@ -41,6 +47,7 @@ export function usePomodoro() {
   const [breakDuration, setBreakDuration] = useState(5 * 60);
   const [timeLeft, setTimeLeft] = useState(25 * 60);
   const [resource, setResource] = useState<ResourceType>("chords");
+  const [accentColor, setAccentColor] = useState<AccentColor>("blue");
   const [settingsLoaded, setSettingsLoaded] = useState(false);
 
   useEffect(() => {
@@ -48,13 +55,27 @@ export function usePomodoro() {
       setWorkDuration(serverSettings.workDuration);
       setBreakDuration(serverSettings.breakDuration);
       setResource(serverSettings.resource);
+      setAccentColor(normalizeAccentColor(serverSettings.accentColor));
       setTimeLeft(serverSettings.workDuration);
       setSettingsLoaded(true);
     }
   }, [serverSettings, settingsLoaded]);
 
+  useEffect(() => {
+    if (accentColor === "orange") {
+      document.documentElement.setAttribute("data-accent-theme", "orange");
+    } else {
+      document.documentElement.removeAttribute("data-accent-theme");
+    }
+  }, [accentColor]);
+
   const saveSettingsMutation = useMutation({
-    mutationFn: async (data: { workDuration: number; breakDuration: number; resource: ResourceType }) => {
+    mutationFn: async (data: {
+      workDuration: number;
+      breakDuration: number;
+      resource: ResourceType;
+      accentColor: AccentColor;
+    }) => {
       await apiRequest("PUT", "/api/settings", { sessionKey, ...data });
     },
     onSuccess: () => {
@@ -126,8 +147,12 @@ export function usePomodoro() {
     setResource(val);
   };
 
+  const updateAccentColor = (val: AccentColor) => {
+    setAccentColor(val);
+  };
+
   const saveSettings = () => {
-    saveSettingsMutation.mutate({ workDuration, breakDuration, resource });
+    saveSettingsMutation.mutate({ workDuration, breakDuration, resource, accentColor });
   };
 
   const setModeAndReset = (newMode: Mode) => {
@@ -146,6 +171,7 @@ export function usePomodoro() {
     workDuration,
     breakDuration,
     resource,
+    accentColor,
     stats: stats ?? { totalSessions: 0, totalFocusMinutes: 0, totalBreakMinutes: 0 },
     toggleTimer,
     resetTimer,
@@ -153,6 +179,7 @@ export function usePomodoro() {
     setWorkDuration: updateWorkDuration,
     setBreakDuration: updateBreakDuration,
     setResource: updateResource,
+    setAccentColor: updateAccentColor,
     saveSettings,
   };
 }

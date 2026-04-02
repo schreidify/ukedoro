@@ -54,7 +54,8 @@ CREATE TABLE public.settings (
     session_key character varying(255) NOT NULL,
     work_duration integer DEFAULT 1500 NOT NULL,
     break_duration integer DEFAULT 300 NOT NULL,
-    resource text DEFAULT 'chords'::text NOT NULL
+    resource text DEFAULT 'chords'::text NOT NULL,
+    accent_color character varying(16) DEFAULT 'blue'::character varying NOT NULL
 );
 
 CREATE SEQUENCE public.settings_id_seq
@@ -83,8 +84,8 @@ COPY public.pomodoro_sessions (id, session_key, mode, duration, completed_at) FR
 -- Data for Name: settings
 --
 
-COPY public.settings (id, session_key, work_duration, break_duration, resource) FROM stdin;
-1	d22dd896-dae4-4c34-8672-07d73935f689	300	60	chords
+COPY public.settings (id, session_key, work_duration, break_duration, resource, accent_color) FROM stdin;
+1	d22dd896-dae4-4c34-8672-07d73935f689	300	60	chords	blue
 \.
 
 SELECT pg_catalog.setval('public.pomodoro_sessions_id_seq', 2, true);

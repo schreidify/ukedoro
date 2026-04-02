@@ -69,6 +69,15 @@
   --break-foreground: 0 0% 98%;
 }
 
+/* Swap focus accent to orange (primary orange, secondary blue) */
+html[data-accent-theme="orange"] {
+  --primary: 36 100% 57%;
+  --primary-foreground: 0 0% 13%;
+  --secondary: 221 83% 53%;
+  --secondary-foreground: 0 0% 98%;
+  --ring: 36 100% 57%;
+}
+
 .dark {
   --background: 0 0% 10%;
   --foreground: 0 0% 98%;
@@ -92,6 +101,14 @@
   
   --break: 122 39% 49%;
   --break-foreground: 0 0% 98%;
+}
+
+html.dark[data-accent-theme="orange"] {
+  --primary: 36 100% 55%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 217 91% 60%;
+  --secondary-foreground: 0 0% 98%;
+  --ring: 36 100% 55%;
 }
 
 @layer base {
