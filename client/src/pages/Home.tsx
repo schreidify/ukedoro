@@ -82,7 +82,7 @@ export default function Home() {
               }`}
               data-testid="button-mode-work"
             >
-              <Briefcase className="w-4 h-4" /> Focus
+              <Briefcase className="w-4 h-4" /> FOCUS
             </button>
             <button
               onClick={() => setMode("break")}
