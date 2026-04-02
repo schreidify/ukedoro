@@ -2,7 +2,7 @@ import { pgTable, text, varchar, integer, timestamp, serial } from "drizzle-orm/
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const accentColorEnum = z.enum(["blue", "orange"]);
+export const accentColorEnum = z.enum(["green", "orange"]);
 export type AccentColor = z.infer<typeof accentColorEnum>;
 
 export const settings = pgTable("settings", {
@@ -11,7 +11,7 @@ export const settings = pgTable("settings", {
   workDuration: integer("work_duration").notNull().default(1500),
   breakDuration: integer("break_duration").notNull().default(300),
   resource: text("resource").notNull().default("chords"),
-  accentColor: varchar("accent_color", { length: 16 }).notNull().default("blue"),
+  accentColor: varchar("accent_color", { length: 16 }).notNull().default("orange"),
 });
 
 export const pomodoroSessions = pgTable("pomodoro_sessions", {
